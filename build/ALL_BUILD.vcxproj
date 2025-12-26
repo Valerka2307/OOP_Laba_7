@@ -182,10 +182,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Project>{65EEA9E9-5D30-3CCA-8F6D-FFF2E3DA7B9E}</Project>
       <Name>OOP_NPC_Simulation_lib</Name>
     </ProjectReference>
-    <ProjectReference Include="C:\Users\ValCombucha\CPP_Programming\oop_laba_7\build\fight_logic_tests.vcxproj">
-      <Project>{1F211EB3-9541-39BC-8817-BCEC34843772}</Project>
-      <Name>fight_logic_tests</Name>
-    </ProjectReference>
     <ProjectReference Include="C:\Users\ValCombucha\CPP_Programming\oop_laba_7\build\_deps\googletest-build\googlemock\gmock.vcxproj">
       <Project>{7418F0D2-CC7F-3CF0-9702-D0791B556FA5}</Project>
       <Name>gmock</Name>
@@ -210,9 +206,17 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Project>{7273A771-8D9B-3324-8ED3-640E1F8727E2}</Project>
       <Name>npc_factory_tests</Name>
     </ProjectReference>
+    <ProjectReference Include="C:\Users\ValCombucha\CPP_Programming\oop_laba_7\build\npc_game_tests.vcxproj">
+      <Project>{108C4912-B45C-3C42-918B-B497BE4D2415}</Project>
+      <Name>npc_game_tests</Name>
+    </ProjectReference>
     <ProjectReference Include="C:\Users\ValCombucha\CPP_Programming\oop_laba_7\build\output_tests.vcxproj">
       <Project>{D2174857-0084-3F2B-BBA6-DE2505121DAA}</Project>
       <Name>output_tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\ValCombucha\CPP_Programming\oop_laba_7\build\test_program.vcxproj">
+      <Project>{7A6D7BE6-0C74-3DF2-9FE2-A2DAD3C79614}</Project>
+      <Name>test_program</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

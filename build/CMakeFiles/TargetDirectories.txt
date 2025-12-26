@@ -1,9 +1,10 @@
 C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/CMakeFiles/OOP_NPC_Simulation_lib.dir
 C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/CMakeFiles/OOP_NPC_Simulation.dir
+C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/CMakeFiles/npc_game_tests.dir
+C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/CMakeFiles/test_program.dir
 C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/CMakeFiles/input_tests.dir
 C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/CMakeFiles/npc_factory_tests.dir
 C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/CMakeFiles/output_tests.dir
-C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/CMakeFiles/fight_logic_tests.dir
 C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/CMakeFiles/RUN_TESTS.dir
 C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/CMakeFiles/INSTALL.dir
 C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/CMakeFiles/ALL_BUILD.dir

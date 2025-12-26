@@ -4,60 +4,60 @@
 #include "Elf.hpp"
 #include "Bear.hpp"
 
-// Тесты для Factory
-
-TEST(NPCFactoryTests, CreateRobberNPC) {
+// Factory pattern tests
+class FactoryTest : public ::testing::Test {
+protected:
     Factory factory;
-    auto robber = factory.createNPC(RobberType, 50, 50);
-    ASSERT_NE(robber, nullptr);
-    EXPECT_TRUE(robber->is_robber());
+};
+
+TEST_F(FactoryTest, CreateRobberWithFactory) {
+    auto npc = factory.createNPC(RobberType, 10, 20);
+    EXPECT_NE(npc, nullptr);
+    EXPECT_EQ(npc->getTypeName(), "Robber");
+    EXPECT_EQ(npc->getX(), 10);
+    EXPECT_EQ(npc->getY(), 20);
+    EXPECT_TRUE(npc->is_robber());
 }
 
-TEST(NPCFactoryTests, CreateElfNPC) {
-    Factory factory;
-    auto elf = factory.createNPC(ElfType, 100, 100);
-    ASSERT_NE(elf, nullptr);
-    EXPECT_TRUE(elf->is_elf());
+TEST_F(FactoryTest, CreateElfWithFactory) {
+    auto npc = factory.createNPC(ElfType, 30, 40);
+    EXPECT_NE(npc, nullptr);
+    EXPECT_EQ(npc->getTypeName(), "Elf");
+    EXPECT_EQ(npc->getX(), 30);
+    EXPECT_EQ(npc->getY(), 40);
+    EXPECT_TRUE(npc->is_elf());
 }
 
-TEST(NPCFactoryTests, CreateBearNPC) {
-    Factory factory;
-    auto bear = factory.createNPC(BearType, 150, 150);
-    ASSERT_NE(bear, nullptr);
-    EXPECT_TRUE(bear->is_bear());
+TEST_F(FactoryTest, CreateBearWithFactory) {
+    auto npc = factory.createNPC(BearType, 50, 60);
+    EXPECT_NE(npc, nullptr);
+    EXPECT_EQ(npc->getTypeName(), "Bear");
+    EXPECT_EQ(npc->getX(), 50);
+    EXPECT_EQ(npc->getY(), 60);
+    EXPECT_TRUE(npc->is_bear());
 }
 
-TEST(NPCFactoryTests, NPCCoordinatesSetCorrectly) {
-    Factory factory;
-    auto npc = factory.createNPC(RobberType, 123, 456);
-    EXPECT_EQ(npc->getX(), 123);
-    EXPECT_EQ(npc->getY(), 456);
+TEST_F(FactoryTest, CreateUnknownTypeReturnsNull) {
+    auto npc = factory.createNPC(Unknown, 0, 0);
+    EXPECT_EQ(npc, nullptr);
 }
 
-TEST(NPCFactoryTests, NPCTypeCorrectAfterCreation) {
-    Factory factory;
-    auto robber = factory.createNPC(RobberType, 10, 20);
-    auto elf = factory.createNPC(ElfType, 10, 20);
-    auto bear = factory.createNPC(BearType, 10, 20);
+TEST_F(FactoryTest, MultipleCreations) {
+    auto npc1 = factory.createNPC(RobberType, 0, 0);
+    auto npc2 = factory.createNPC(ElfType, 10, 10);
+    auto npc3 = factory.createNPC(BearType, 20, 20);
     
-    EXPECT_EQ(robber->getType(), RobberType);
-    EXPECT_EQ(elf->getType(), ElfType);
-    EXPECT_EQ(bear->getType(), BearType);
+    EXPECT_NE(npc1, nullptr);
+    EXPECT_NE(npc2, nullptr);
+    EXPECT_NE(npc3, nullptr);
+    EXPECT_NE(npc1, npc2);
+    EXPECT_NE(npc2, npc3);
+    EXPECT_NE(npc1, npc3);
 }
 
-TEST(NPCFactoryTests, CreateMultipleNPCsOfSameType) {
-    Factory factory;
-    auto robber1 = factory.createNPC(RobberType, 10, 10);
-    auto robber2 = factory.createNPC(RobberType, 20, 20);
-    
-    ASSERT_NE(robber1, nullptr);
-    ASSERT_NE(robber2, nullptr);
-    EXPECT_NE(robber1, robber2);
-}
-
-TEST(NPCFactoryTests, FactoryProvidesObserversToNPC) {
-    Factory factory;
-    auto npc = factory.createNPC(RobberType, 50, 50);
-    ASSERT_NE(npc, nullptr);
-    // NPC должно быть создано с подписанными observer'ами
+TEST_F(FactoryTest, FactoryPreservesType) {
+    for (int i = 0; i < 10; ++i) {
+        auto robber = factory.createNPC(RobberType, i, i);
+        EXPECT_EQ(robber->getType(), RobberType);
+    }
 }

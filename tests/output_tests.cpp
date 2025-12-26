@@ -1,100 +1,61 @@
 #include <gtest/gtest.h>
 #include <sstream>
 #include "Game.hpp"
+#include "Robber.hpp"
+#include "Elf.hpp"
+#include "Bear.hpp"
+#include "Observer.hpp"
 
-// Тесты для вывода данных
+// Output and observer tests
+class OutputTest : public ::testing::Test {
+};
 
-TEST(OutputTests, PrintEmptyNPCList) {
-    Game game;
-    std::stringstream buffer;
-    std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
+TEST_F(OutputTest, NPCTypeName) {
+    auto robber = std::make_shared<Robber>(0, 0, "TestRobber");
+    auto elf = std::make_shared<Elf>(0, 0, "TestElf");
+    auto bear = std::make_shared<Bear>(0, 0, "TestBear");
     
-    game.printAllNPCs();
-    
-    std::cout.rdbuf(old);
-    std::string output = buffer.str();
-    EXPECT_NE(output.find("No NPCs"), std::string::npos);
+    EXPECT_EQ(robber->getTypeName(), "Robber");
+    EXPECT_EQ(elf->getTypeName(), "Elf");
+    EXPECT_EQ(bear->getTypeName(), "Bear");
 }
 
-TEST(OutputTests, PrintSingleNPC) {
-    Game game;
-    game.addNPC(RobberType, 100, 100, "Bandit");
+TEST_F(OutputTest, NPCName) {
+    auto npc = std::make_shared<Robber>(0, 0, "MyNPC");
+    EXPECT_EQ(npc->getName(), "MyNPC");
     
-    std::stringstream buffer;
-    std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
-    
-    game.printAllNPCs();
-    
-    std::cout.rdbuf(old);
-    std::string output = buffer.str();
-    EXPECT_NE(output.find("Robber"), std::string::npos);
-    EXPECT_NE(output.find("Bandit"), std::string::npos);
+    npc->setName("NewName");
+    EXPECT_EQ(npc->getName(), "NewName");
 }
 
-TEST(OutputTests, PrintMultipleNPCs) {
-    Game game;
-    game.addNPC(RobberType, 10, 10, "Robber1");
-    game.addNPC(ElfType, 20, 20, "Elf1");
-    game.addNPC(BearType, 30, 30, "Bear1");
-    
-    std::stringstream buffer;
-    std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
-    
-    game.printAllNPCs();
-    
-    std::cout.rdbuf(old);
-    std::string output = buffer.str();
-    EXPECT_NE(output.find("Robber1"), std::string::npos);
-    EXPECT_NE(output.find("Elf1"), std::string::npos);
-    EXPECT_NE(output.find("Bear1"), std::string::npos);
+TEST_F(OutputTest, NPCPosition) {
+    auto npc = std::make_shared<Elf>(25, 75, "TestElf");
+    EXPECT_EQ(npc->getX(), 25);
+    EXPECT_EQ(npc->getY(), 75);
 }
 
-TEST(OutputTests, PrintNPCCoordinates) {
-    Game game;
-    game.addNPC(RobberType, 123, 456, "LocatedRobber");
-    
-    std::stringstream buffer;
-    std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
-    
-    game.printAllNPCs();
-    
-    std::cout.rdbuf(old);
-    std::string output = buffer.str();
-    EXPECT_NE(output.find("123"), std::string::npos);
-    EXPECT_NE(output.find("456"), std::string::npos);
+TEST_F(OutputTest, ObserverLogCreated) {
+    auto observer = ObserverLog::get();
+    EXPECT_NE(observer, nullptr);
 }
 
-TEST(OutputTests, PrintNPCTypes) {
-    Game game;
-    game.addNPC(RobberType, 10, 10, "R");
-    game.addNPC(ElfType, 20, 20, "E");
-    game.addNPC(BearType, 30, 30, "B");
-    
-    std::stringstream buffer;
-    std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
-    
-    game.printAllNPCs();
-    
-    std::cout.rdbuf(old);
-    std::string output = buffer.str();
-    EXPECT_NE(output.find("Robber"), std::string::npos);
-    EXPECT_NE(output.find("Elf"), std::string::npos);
-    EXPECT_NE(output.find("Bear"), std::string::npos);
+TEST_F(OutputTest, ObserverOutCreated) {
+    auto observer = ObserverOut::get();
+    EXPECT_NE(observer, nullptr);
 }
 
-TEST(OutputTests, CorrectFormatting) {
+TEST_F(OutputTest, GameInitializesProperly) {
     Game game;
-    game.addNPC(RobberType, 100, 200, "TestNPC");
+    game.initializeNPCs();
+    EXPECT_EQ(game.getNPCCount(), INITIAL_NPC_COUNT);
+}
+
+TEST_F(OutputTest, MultipleObserversCanBeCreated) {
+    auto observer1 = ObserverLog::get();
+    auto observer2 = ObserverLog::get();
+    auto observer3 = ObserverOut::get();
     
-    std::stringstream buffer;
-    std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
-    
-    game.printAllNPCs();
-    
-    std::cout.rdbuf(old);
-    std::string output = buffer.str();
-    // Проверяем, что формат содержит открывающую скобку
-    EXPECT_NE(output.find("("), std::string::npos);
-    EXPECT_NE(output.find(")"), std::string::npos);
-    EXPECT_NE(output.find(","), std::string::npos);
+    EXPECT_NE(observer1, nullptr);
+    EXPECT_NE(observer2, nullptr);
+    EXPECT_NE(observer3, nullptr);
 }

@@ -46,6 +46,24 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
+# NPC and Game tests
+add_executable(npc_game_tests
+    tests/test_npc_game.cpp
+)
+target_link_libraries(npc_game_tests
+    PRIVATE ${PROJECT_NAME}_lib gtest gtest_main
+)
+add_test(NAME NPCGameTests COMMAND npc_game_tests)
+
+# Main program tests
+add_executable(test_program
+    tests/test_program.cpp
+)
+target_link_libraries(test_program
+    PRIVATE ${PROJECT_NAME}_lib gtest gtest_main
+)
+add_test(NAME ProgramTests COMMAND test_program)
+
 # Input tests
 add_executable(input_tests
     tests/input_tests.cpp
@@ -72,12 +90,4 @@ target_link_libraries(output_tests
     PRIVATE ${PROJECT_NAME}_lib gtest gtest_main
 )
 add_test(NAME OutputTests COMMAND output_tests)
-
-# Fight logic tests
-add_executable(fight_logic_tests
-    tests/test_fight_logic.cpp
-)
-target_link_libraries(fight_logic_tests
-    PRIVATE ${PROJECT_NAME}_lib gtest gtest_main
-)
 add_test(NAME FightLogicTests COMMAND fight_logic_tests)

@@ -55,15 +55,15 @@ protected:
     virtual int getMoveDistance() const;
     virtual int getKillDistance() const;
 
-    virtual BattleResult accept_fight(std::shared_ptr<NPC>) = 0;
+    virtual BattleResult accept_fight(std::shared_ptr<NPC>, const BattleStats&) = 0;
 
     virtual bool is_robber() const;
     virtual bool is_elf() const;
     virtual bool is_bear() const ;
 
-    virtual BattleResult fight(std::shared_ptr<Robber> other) = 0;
-    virtual BattleResult fight(std::shared_ptr<Elf> other) = 0;
-    virtual BattleResult fight(std::shared_ptr<Bear> other) = 0;
+    virtual BattleResult fight(std::shared_ptr<Robber> other, const BattleStats&) = 0;
+    virtual BattleResult fight(std::shared_ptr<Elf> other, const BattleStats&) = 0;
+    virtual BattleResult fight(std::shared_ptr<Bear> other, const BattleStats&) = 0;
     virtual void print() = 0;
 
     virtual void save(std::ostream &os);

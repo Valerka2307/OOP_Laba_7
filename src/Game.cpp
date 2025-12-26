@@ -265,15 +265,28 @@ void Game::performBattle(const Battle& battle) {
         }
     }
     
+    // Броски кубика для атаки и защиты
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dice(1, 6); // 6-гранный кубик
+    
+    BattleStats stats;
+    stats.attacker_attack = dice(gen);
+    stats.attacker_defense = dice(gen);
+    stats.defender_attack = dice(gen);
+    stats.defender_defense = dice(gen);
+    
     // Используем боевую систему NPC (visitor pattern)
-    BattleResult result = battle.attacker->accept_fight(battle.defender);
+    BattleResult result = battle.attacker->accept_fight(battle.defender, stats);
     
     std::lock_guard<std::shared_mutex> write_lock(npc_mutex);
     
     {
         std::lock_guard<std::mutex> cout_lock(cout_mutex);
-        std::cout << "[BATTLE] " << battle.attacker->getTypeName() << " " << battle.attacker->getName() 
-                  << " vs " << battle.defender->getTypeName() << " " << battle.defender->getName();
+        std::cout << "[BATTLE] " << battle.attacker->getTypeName() << " \"" << battle.attacker->getName() 
+                  << "\" (ATK:" << stats.attacker_attack << " DEF:" << stats.attacker_defense << ")"
+                  << " vs " << battle.defender->getTypeName() << " \"" << battle.defender->getName() 
+                  << "\" (ATK:" << stats.defender_attack << " DEF:" << stats.defender_defense << ")";
     }
     
     // Обработка результата боя

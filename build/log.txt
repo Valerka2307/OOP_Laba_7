@@ -1,40 +1,24 @@
-Elf "NPC_2" (at 47,50) vs Bear "NPC_0" (at 51,18) - Victory
-Elf "NPC_2" (at 39,42) vs Bear "NPC_1" (at 77,76) - Victory
-Elf "NPC_2" (at 39,60) vs Elf "NPC_3" (at 51,35) - PeaceAndLove
-Elf "NPC_2" (at 39,60) vs Bear "NPC_4" (at 85,66) - Victory
-Elf "NPC_2" (at 39,60) vs Elf "NPC_5" (at 72,76) - PeaceAndLove
-Elf "NPC_2" (at 39,60) vs Bear "NPC_6" (at 47,94) - Victory
-Elf "NPC_2" (at 39,60) vs Elf "NPC_7" (at 40,18) - PeaceAndLove
-Elf "NPC_2" (at 30,51) vs Elf "NPC_8" (at 42,33) - PeaceAndLove
-Robber "NPC_9" (at 27,28) vs Elf "NPC_2" (at 30,51) - Victory
-Elf "NPC_3" (at 54,11) vs Elf "NPC_7" (at 49,21) - PeaceAndLove
-Elf "NPC_3" (at 45,20) vs Elf "NPC_8" (at 25,41) - PeaceAndLove
-Robber "NPC_9" (at 31,24) vs Elf "NPC_3" (at 45,20) - Victory
-Elf "NPC_5" (at 64,52) vs Elf "NPC_10" (at 33,79) - PeaceAndLove
-Elf "NPC_5" (at 64,52) vs Elf "NPC_11" (at 91,38) - PeaceAndLove
-Elf "NPC_5" (at 60,48) vs Elf "NPC_12" (at 30,73) - PeaceAndLove
-Robber "NPC_15" (at 73,49) vs Elf "NPC_5" (at 60,48) - Victory
-Elf "NPC_7" (at 21,14) vs Elf "NPC_8" (at 15,5) - PeaceAndLove
-Robber "NPC_9" (at 49,40) vs Elf "NPC_7" (at 21,14) - Victory
-Robber "NPC_9" (at 25,12) vs Elf "NPC_8" (at 20,6) - Victory
-Robber "NPC_9" (at 13,20) vs Elf "NPC_10" (at 7,93) - Victory
-Robber "NPC_9" (at 13,20) vs Elf "NPC_13" (at 48,26) - Victory
-Robber "NPC_9" (at 13,20) vs Bear "NPC_30" (at 44,25) - PeaceAndLove
-Robber "NPC_9" (at 13,20) vs Elf "NPC_31" (at 11,31) - Victory
-Robber "NPC_9" (at 21,12) vs Elf "NPC_43" (at 2,25) - Victory
-Robber "NPC_9" (at 21,12) vs Elf "NPC_46" (at 12,5) - Victory
-Elf "NPC_11" (at 96,40) vs Elf "NPC_12" (at 18,94) - PeaceAndLove
-Elf "NPC_11" (at 87,40) vs Elf "NPC_14" (at 67,26) - PeaceAndLove
-Robber "NPC_15" (at 75,51) vs Elf "NPC_11" (at 87,40) - Victory
-Robber "NPC_15" (at 80,62) vs Elf "NPC_12" (at 15,87) - Victory
-Robber "NPC_18" (at 73,8) vs Elf "NPC_14" (at 72,21) - Victory
-Robber "NPC_15" (at 70,66) vs Elf "NPC_17" (at 80,71) - Victory
-Robber "NPC_15" (at 70,66) vs Elf "NPC_33" (at 98,63) - Victory
-Robber "NPC_15" (at 70,66) vs Bear "NPC_34" (at 81,77) - PeaceAndLove
-Robber "NPC_15" (at 70,76) vs Elf "NPC_36" (at 77,73) - Victory
-Robber "NPC_15" (at 70,76) vs Elf "NPC_40" (at 80,14) - Victory
-Robber "NPC_16" (at 42,61) vs Bear "NPC_20" (at 18,77) - PeaceAndLove
-Robber "NPC_16" (at 42,61) vs Elf "NPC_21" (at 32,65) - Victory
-Robber "NPC_16" (at 42,61) vs Bear "NPC_29" (at 25,31) - PeaceAndLove
-Robber "NPC_16" (at 42,61) vs Elf "NPC_32" (at 9,59) - Victory
-Robber "NPC_16" (at 35,54) vs Robber "NPC_44" (at 17,89) - MutualDestruction
+=== Game Log Started ===
+Map size: 100x100
+Initial NPCs: 50
+Game duration: 30 seconds
+Robber: move distance = 10, kill distance = 10
+Elf:    move distance = 10, kill distance = 50
+Bear:   move distance = 10, kill distance = 10
+================================
+
+Bear "NPC_0" (at 37,51) vs Elf "NPC_5" (at 31,23) - MutualDestruction
+Robber "NPC_1" (at 58,25) vs Bear "NPC_4" (at 57,38) - Defeat
+Bear "NPC_2" (at 63,53) vs Elf "NPC_3" (at 93,99) - PeaceAndLove
+Bear "NPC_2" (at 63,53) vs Elf "NPC_14" (at 21,59) - Defeat
+Elf "NPC_3" (at 93,99) vs Robber "NPC_10" (at 25,82) - Defeat
+Bear "NPC_4" (at 61,22) vs Elf "NPC_14" (at 14,69) - Victory
+Bear "NPC_4" (at 61,15) vs Elf "NPC_20" (at 78,93) - MutualDestruction
+Robber "NPC_6" (at 34,67) vs Elf "NPC_18" (at 36,72) - Defeat
+Bear "NPC_7" (at 69,47) vs Elf "NPC_18" (at 39,59) - PeaceAndLove
+Bear "NPC_7" (at 78,56) vs Elf "NPC_25" (at 67,61) - Defeat
+Bear "NPC_8" (at 57,34) vs Elf "NPC_15" (at 89,54) - Defeat
+Bear "NPC_9" (at 4,26) vs Elf "NPC_36" (at 48,77) - Victory
+Bear "NPC_9" (at 4,26) vs Elf "NPC_37" (at 20,65) - MutualDestruction
+Robber "NPC_10" (at 31,99) vs Elf "NPC_18" (at 32,44) - Victory
+Robber "NPC_10" (at 31,99) vs Elf "NPC_25" (at 79,54) - PeaceAndLove

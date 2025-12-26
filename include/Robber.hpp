@@ -13,11 +13,11 @@ class Robber : public NPC {
 
     bool is_robber() const override;
 
-    BattleResult fight(std::shared_ptr<Robber> other) override;
-    BattleResult fight(std::shared_ptr<Elf> other) override;
-    BattleResult fight(std::shared_ptr<Bear> other) override;
+    BattleResult fight(std::shared_ptr<Robber> other, const BattleStats&) override;
+    BattleResult fight(std::shared_ptr<Elf> other, const BattleStats&) override;
+    BattleResult fight(std::shared_ptr<Bear> other, const BattleStats&) override;
     
-    BattleResult accept_fight(std::shared_ptr<NPC>) override;
+    BattleResult accept_fight(std::shared_ptr<NPC>, const BattleStats&) override;
 
     void save(std::ostream &os) override;
 
