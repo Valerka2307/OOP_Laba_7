@@ -31,6 +31,7 @@ protected:
     NPCType type;
     int x{0};
     int y{0};
+    bool alive{true};
     std::vector<std::shared_ptr<Observer>> observers;
  public:
     NPC(NPCType t, int _x, int _y, const std::string& _name = "");
@@ -46,6 +47,8 @@ protected:
     int getY() const { return y; }
     void setX(int _x) { x = _x; }
     void setY(int _y) { y = _y; }
+    bool isAlive() const { return alive; }
+    void setAlive(bool a) { alive = a; }
     NPCType getType() const { return type; }
     virtual std::string getTypeName() const = 0;
     

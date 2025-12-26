@@ -3,6 +3,7 @@
 #include "Elf.hpp"
 #include "Bear.hpp"
 #include "Visitor.hpp"
+#include "Observer.hpp"
 #include <iostream>
 #include <algorithm>
 #include <sstream>
@@ -183,10 +184,14 @@ void Game::movementThreadFunction() {
         std::vector<std::shared_ptr<NPC>> npcs_snapshot;
         {
             std::shared_lock<std::shared_mutex> read_lock(npc_mutex);
-            npcs_snapshot = npcs;
+            for (const auto& npc : npcs) {
+                if (npc->isAlive()) {
+                    npcs_snapshot.push_back(npc);
+                }
+            }
         }
         
-        // Двигаем каждого NPC
+        // Двигаем каждого живого NPC
         for (auto& npc : npcs_snapshot) {
             int dir = dis_direction(gen);
             int dx = 0, dy = 0;
@@ -206,7 +211,7 @@ void Game::movementThreadFunction() {
             // Получаем расстояние хода для этого NPC
             int moveDistance = npc->getMoveDistance();
             
-            // Применяем движение со случайным множителем (0 до moveDistance)
+            // Применяем движение со случайным множителем (1 до moveDistance)
             std::uniform_int_distribution<> dis_steps(1, moveDistance);
             int steps = dis_steps(gen);
             
@@ -223,8 +228,12 @@ void Game::movementThreadFunction() {
         // Проверяем расстояния и создаём задачи на боевой поток
         std::shared_lock<std::shared_mutex> read_lock(npc_mutex);
         for (size_t i = 0; i < npcs.size(); ++i) {
+            if (!npcs[i]->isAlive()) continue;
+            
             for (size_t j = i + 1; j < npcs.size(); ++j) {
-                // Получаем дистанцию убийства для обоих NPC (используем минимум)
+                if (!npcs[j]->isAlive()) continue;
+                
+                // Получаем дистанцию убийства для обоих NPC (используем максимум)
                 int killDist1 = npcs[i]->getKillDistance();
                 int killDist2 = npcs[j]->getKillDistance();
                 int maxKillDist = std::max(killDist1, killDist2);
@@ -245,13 +254,13 @@ void Game::movementThreadFunction() {
 }
 
 void Game::performBattle(const Battle& battle) {
-    // Проверяем, что оба NPC еще существуют в списке
+    // Проверяем, что оба NPC еще существуют в списке и живы
     {
         std::shared_lock<std::shared_mutex> read_lock(npc_mutex);
         bool attacker_exists = std::find(npcs.begin(), npcs.end(), battle.attacker) != npcs.end();
         bool defender_exists = std::find(npcs.begin(), npcs.end(), battle.defender) != npcs.end();
         
-        if (!attacker_exists || !defender_exists) {
+        if (!attacker_exists || !defender_exists || !battle.attacker->isAlive() || !battle.defender->isAlive()) {
             return;
         }
     }
@@ -269,47 +278,33 @@ void Game::performBattle(const Battle& battle) {
     
     // Обработка результата боя
     if (result == Victory) {
-        // Проверяем результат с точки зрения защитника
-        BattleResult reverse_result = battle.defender->accept_fight(battle.attacker);
-        
-        if (reverse_result == Defeat) {
-            // Атакующий победил
-            npcs.erase(std::remove(npcs.begin(), npcs.end(), battle.defender), npcs.end());
-            {
-                std::lock_guard<std::mutex> cout_lock(cout_mutex);
-                std::cout << " - " << battle.attacker->getName() << " WINS!" << std::endl;
-            }
-        } else if (reverse_result == Victory) {
-            // Защитник победил
-            npcs.erase(std::remove(npcs.begin(), npcs.end(), battle.attacker), npcs.end());
-            {
-                std::lock_guard<std::mutex> cout_lock(cout_mutex);
-                std::cout << " - " << battle.defender->getName() << " WINS!" << std::endl;
-            }
-        } else if (reverse_result == PeaceAndLove) {
-            // Мирный исход
-            {
-                std::lock_guard<std::mutex> cout_lock(cout_mutex);
-                std::cout << " - PEACE!" << std::endl;
-            }
+        // Атакующий победил
+        battle.defender->setAlive(false);
+        battle.attacker->fight_notify(battle.defender, static_cast<int>(result));
+        {
+            std::lock_guard<std::mutex> cout_lock(cout_mutex);
+            std::cout << " - " << battle.attacker->getName() << " WINS!" << std::endl;
         }
     } else if (result == MutualDestruction) {
         // Оба погибают
-        npcs.erase(std::remove(npcs.begin(), npcs.end(), battle.attacker), npcs.end());
-        npcs.erase(std::remove(npcs.begin(), npcs.end(), battle.defender), npcs.end());
+        battle.attacker->setAlive(false);
+        battle.defender->setAlive(false);
+        battle.attacker->fight_notify(battle.defender, static_cast<int>(result));
         {
             std::lock_guard<std::mutex> cout_lock(cout_mutex);
             std::cout << " - MUTUAL DESTRUCTION!" << std::endl;
         }
     } else if (result == PeaceAndLove) {
         // Мирный исход
+        battle.attacker->fight_notify(battle.defender, static_cast<int>(result));
         {
             std::lock_guard<std::mutex> cout_lock(cout_mutex);
             std::cout << " - PEACE!" << std::endl;
         }
     } else if (result == Defeat) {
         // Атакующий проигрывает
-        npcs.erase(std::remove(npcs.begin(), npcs.end(), battle.attacker), npcs.end());
+        battle.attacker->setAlive(false);
+        battle.attacker->fight_notify(battle.defender, static_cast<int>(result));
         {
             std::lock_guard<std::mutex> cout_lock(cout_mutex);
             std::cout << " - " << battle.defender->getName() << " WINS!" << std::endl;
@@ -342,7 +337,13 @@ void Game::battleThreadFunction() {
 void Game::printMap() const {
     std::shared_lock<std::shared_mutex> read_lock(npc_mutex);
     
-    if (npcs.empty()) {
+    // Count alive NPCs
+    int alive_count = 0;
+    for (const auto& npc : npcs) {
+        if (npc->isAlive()) alive_count++;
+    }
+    
+    if (alive_count == 0) {
         std::lock_guard<std::mutex> cout_lock(cout_mutex);
         std::cout << "\n=== MAP (No NPCs alive) ===" << std::endl;
         return;
@@ -355,8 +356,10 @@ void Game::printMap() const {
     // Create display matrix
     std::vector<std::vector<char>> map(DISPLAY_HEIGHT, std::vector<char>(DISPLAY_WIDTH, '.'));
     
-    // Mark alive NPCs
+    // Mark alive NPCs only
     for (const auto& npc : npcs) {
+        if (!npc->isAlive()) continue;
+        
         int x = npc->getX();
         int y = npc->getY();
         
@@ -381,7 +384,7 @@ void Game::printMap() const {
     
     // Print the map
     std::lock_guard<std::mutex> cout_lock(cout_mutex);
-    std::cout << "\n=== MAP (Alive: " << npcs.size() << "/R:Robber E:Elf B:Bear *:Multiple) ===" << std::endl;
+    std::cout << "\n=== MAP (Alive: " << alive_count << "/R:Robber E:Elf B:Bear *:Multiple) ===" << std::endl;
     
     for (int y = 0; y < DISPLAY_HEIGHT; ++y) {
         for (int x = 0; x < DISPLAY_WIDTH; ++x) {
@@ -407,6 +410,24 @@ void Game::startGame() {
     
     running = true;
     
+    // Clear log file at the start
+    std::string log_path = std::filesystem::current_path().parent_path().string() + "/log.txt";
+    std::ofstream log_file(log_path, std::ios_base::trunc);
+    if (log_file.is_open()) {
+        log_file << "=== Game Log Started ===" << std::endl;
+        log_file << "Map size: " << MAP_WIDTH << "x" << MAP_HEIGHT << std::endl;
+        log_file << "Initial NPCs: " << INITIAL_NPC_COUNT << std::endl;
+        log_file << "Game duration: " << GAME_DURATION_SECONDS << " seconds" << std::endl;
+        log_file << "Robber: move distance = 10, kill distance = 10" << std::endl;
+        log_file << "Elf:    move distance = 10, kill distance = 50" << std::endl;
+        log_file << "Bear:   move distance = 10, kill distance = 10" << std::endl;
+        log_file << "================================\n" << std::endl;
+        log_file.close();
+    }
+    
+    // Add observer for logging
+    observers.push_back(ObserverLog::get());
+    
     // Инициализируем NPC
     initializeNPCs();
     
@@ -416,9 +437,9 @@ void Game::startGame() {
         std::cout << "Duration: " << GAME_DURATION_SECONDS << " seconds" << std::endl;
         std::cout << "Map size: " << MAP_WIDTH << "x" << MAP_HEIGHT << std::endl;
         std::cout << "Initial NPCs: " << INITIAL_NPC_COUNT << std::endl;
-        std::cout << "All NPC types have:" << std::endl;
-        std::cout << "  Move distance: 5 tiles (random 1-5 per move)" << std::endl;
-        std::cout << "  Kill distance: 10 tiles" << std::endl;
+        std::cout << "Robber: move distance = 10, kill distance = 10" << std::endl;
+        std::cout << "Elf:    move distance = 10, kill distance = 50" << std::endl;
+        std::cout << "Bear:   move distance = 10, kill distance = 10" << std::endl;
         std::cout << "================================\n" << std::endl;
     }
     
@@ -463,18 +484,68 @@ void Game::stopGame() {
 void Game::printSurvivors() const {
     std::shared_lock<std::shared_mutex> read_lock(npc_mutex);
     
+    // Count survivors by type
+    int robber_count = 0, elf_count = 0, bear_count = 0;
+    std::vector<std::shared_ptr<NPC>> survivors;
+    
+    for (const auto& npc : npcs) {
+        if (npc->isAlive()) {
+            survivors.push_back(npc);
+            if (npc->getType() == RobberType) robber_count++;
+            else if (npc->getType() == ElfType) elf_count++;
+            else if (npc->getType() == BearType) bear_count++;
+        }
+    }
+    
     std::lock_guard<std::mutex> cout_lock(cout_mutex);
     std::cout << "\n=== Survivors ===" << std::endl;
     
-    if (npcs.empty()) {
-        std::cout << "No NPCs survived!" << std::endl;
+    // Also write to log file
+    std::string log_path = std::filesystem::current_path().parent_path().string() + "/log.txt";
+    std::ofstream log_file(log_path, std::ios_base::app);
+    if (log_file.is_open()) {
+        log_file << "\n================================" << std::endl;
+        log_file << "=== GAME OVER - SURVIVORS ===" << std::endl;
+    }
+    
+    if (survivors.empty()) {
+        std::cout << "No NPCs survived! All were killed in battle." << std::endl;
+        if (log_file.is_open()) {
+            log_file << "No NPCs survived! All were killed in battle." << std::endl;
+        }
     } else {
-        std::cout << "Total survivors: " << npcs.size() << std::endl;
-        for (const auto& npc : npcs) {
+        std::cout << "Total survivors: " << survivors.size() << " out of " << INITIAL_NPC_COUNT << std::endl;
+        std::cout << "  - Robbers: " << robber_count << std::endl;
+        std::cout << "  - Elves:   " << elf_count << std::endl;
+        std::cout << "  - Bears:   " << bear_count << std::endl;
+        
+        if (log_file.is_open()) {
+            log_file << "Total survivors: " << survivors.size() << " out of " << INITIAL_NPC_COUNT << std::endl;
+            log_file << "  - Robbers: " << robber_count << std::endl;
+            log_file << "  - Elves:   " << elf_count << std::endl;
+            log_file << "  - Bears:   " << bear_count << std::endl;
+        }
+        
+        std::cout << "\nDetailed list:" << std::endl;
+        if (log_file.is_open()) {
+            log_file << "\nDetailed list:" << std::endl;
+        }
+        
+        for (const auto& npc : survivors) {
             std::cout << "  - " << npc->getTypeName() << " \"" << npc->getName() 
                       << "\" at (" << npc->getX() << ", " << npc->getY() << ")" << std::endl;
+            if (log_file.is_open()) {
+                log_file << "  - " << npc->getTypeName() << " \"" << npc->getName() 
+                         << "\" at (" << npc->getX() << ", " << npc->getY() << ")" << std::endl;
+            }
         }
     }
+    
+    if (log_file.is_open()) {
+        log_file << "================================" << std::endl;
+        log_file.close();
+    }
+    
     std::cout << "==================\n" << std::endl;
 }
 

@@ -8,6 +8,8 @@ class Elf : public NPC {
 
     void print() override;
     std::string getTypeName() const override;
+    int getMoveDistance() const override { return 10; }
+    int getKillDistance() const override { return 50; }
 
     bool is_elf() const override;
 
