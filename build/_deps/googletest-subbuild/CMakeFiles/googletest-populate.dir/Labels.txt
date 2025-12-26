@@ -1,0 +1,14 @@
+# Target labels
+ googletest-populate
+# Source files and their labels
+C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/_deps/googletest-subbuild/CMakeFiles/googletest-populate
+C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/_deps/googletest-subbuild/CMakeFiles/ad12b619a0ef879503b9f5220ced26af/googletest-populate.rule
+C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/_deps/googletest-subbuild/CMakeFiles/28c670e7359ba7b0bcc00924ead63c54/googletest-populate-complete.rule
+C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/_deps/googletest-subbuild/CMakeFiles/bfaf973f15ff7b9de6b023f596ec27ef/googletest-populate-build.rule
+C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/_deps/googletest-subbuild/CMakeFiles/bfaf973f15ff7b9de6b023f596ec27ef/googletest-populate-configure.rule
+C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/_deps/googletest-subbuild/CMakeFiles/bfaf973f15ff7b9de6b023f596ec27ef/googletest-populate-download.rule
+C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/_deps/googletest-subbuild/CMakeFiles/bfaf973f15ff7b9de6b023f596ec27ef/googletest-populate-install.rule
+C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/_deps/googletest-subbuild/CMakeFiles/bfaf973f15ff7b9de6b023f596ec27ef/googletest-populate-mkdir.rule
+C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/_deps/googletest-subbuild/CMakeFiles/bfaf973f15ff7b9de6b023f596ec27ef/googletest-populate-patch.rule
+C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/_deps/googletest-subbuild/CMakeFiles/bfaf973f15ff7b9de6b023f596ec27ef/googletest-populate-test.rule
+C:/Users/ValCombucha/CPP_Programming/oop_laba_7/build/_deps/googletest-subbuild/CMakeFiles/bfaf973f15ff7b9de6b023f596ec27ef/googletest-populate-update.rule
